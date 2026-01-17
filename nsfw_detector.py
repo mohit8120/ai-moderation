@@ -1,4 +1,5 @@
 import tensorflow as tf
+import tensorflow_hub as hub
 import numpy as np
 from PIL import Image
 import io
@@ -7,7 +8,11 @@ LABELS = ["neutral", "sexy", "porn", "hentai"]
 
 class NSFWDetector:
     def __init__(self):
-        self.model = tf.keras.models.load_model("nsfw_model.h5")
+        self.model = tf.keras.models.load_model(
+            "nsfw_model.h5",
+            custom_objects={"KerasLayer": hub.KerasLayer},
+            compile=False
+        )
 
     def scan_bytes(self, image_bytes):
         img = Image.open(io.BytesIO(image_bytes)).convert("RGB")
